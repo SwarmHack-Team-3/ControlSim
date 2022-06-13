@@ -1,6 +1,8 @@
 const TURN_INTERVAL = 20
 const TURN_SPEED = 0.08
 
+const SENSING_DIST = 300
+
 class Robot{
     constructor(pos){
         this.pos = pos
@@ -25,6 +27,13 @@ class Robot{
         line(0,0,40,0)
         
         pop()
+    }
+
+    sense(robots, tasks){
+        let seen = {}
+        seen.tasks = tasks.filter(x => x.pos.dist(this.pos) < SENSING_DIST)
+        seen.robots = robots.filter(x => x.pos.dist(this.pos) < SENSING_DIST)
+        return seen
     }
 
 }

@@ -10,7 +10,9 @@ class Task{
             random(HEIGHT - this.size*2) + this.size
         )
         this.expired = false
-        setTimeout(() => this.expired = true, TIME(num_robots))
+        setTimeout(() => {
+            this.expired = true
+        }, TIME(this.num))
     }
 
     is_complete(robots){
@@ -26,8 +28,8 @@ class Task{
         translate(this.pos.x, this.pos.y)
 
         fill(100,0,60)
-        stroke(0)
-        strokeWeight(1)
+        stroke(255)
+        strokeWeight(3)
         circle(0, 0, this.size * 2)
 
         textSize(32)
