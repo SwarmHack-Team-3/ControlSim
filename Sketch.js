@@ -39,6 +39,7 @@ function draw(){
 
     // Draw the robots
     for(let r of ROBOTS){
+        r.move(1)
         r.draw()
     }
 }
