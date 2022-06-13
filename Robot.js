@@ -6,17 +6,21 @@ class Robot{
     constructor(pos){
         this.pos = pos
         this.dir = 0
-        this.velocity = 
+        this.isTurning = false;
     }
 
     turn(deg){
         let turn_dir = deg < 0 ? -TURN_SPEED : TURN_SPEED
         let turnTask = setInterval(() => this.dir += turn_dir, INTERVAL)
-        setTimeout(() => clearInterval(turnTask), Math.abs(deg / TURN_SPEED) * INTERVAL)
+        setTimeout(() => {
+            this.isTurning = true
+            clearInterval(turnTask), Math.abs(deg / TURN_SPEED) * INTERVAL
+            this.isTurning = false
+        })
     }
 
     move(throttle){
-        let move = createVector(this.velocity*throttle,0).rotate(this.dir)
+        let move = createVector(MAX_VELOCITY*throttle,0).rotate(this.dir)
         this.pos.add(move)
     }
 

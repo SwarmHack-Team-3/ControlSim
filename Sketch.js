@@ -39,7 +39,8 @@ function draw(){
 
     // Draw the robots
     for(let r of ROBOTS){
-        r.move(1)
         r.draw()
+        if (!r.isTuring){r.move(1)}
+        
     }
 }
