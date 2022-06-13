@@ -1,5 +1,6 @@
-const TURN_INTERVAL = 20
+const INTERVAL = 20
 const TURN_SPEED = 0.08
+const MAX_VELOCITY = 1
 
 const SENSING_DIST = 300
 
@@ -7,12 +8,22 @@ class Robot{
     constructor(pos){
         this.pos = pos
         this.dir = 0
+        this.isTurning = false;
     }
 
     turn(deg){
         let turn_dir = deg < 0 ? -TURN_SPEED : TURN_SPEED
-        let turnTask = setInterval(() => this.dir += turn_dir, TURN_INTERVAL)
-        setTimeout(() => clearInterval(turnTask), Math.abs(deg / TURN_SPEED) * TURN_INTERVAL)
+        let turnTask = setInterval(() => this.dir += turn_dir, INTERVAL)
+        setTimeout(() => {
+            this.isTurning = true
+            clearInterval(turnTask), Math.abs(deg / TURN_SPEED) * INTERVAL
+            this.isTurning = false
+        })
+    }
+
+    move(throttle){
+        let move = createVector(MAX_VELOCITY*throttle,0).rotate(this.dir)
+        this.pos.add(move)
     }
 
     draw(){
