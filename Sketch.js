@@ -16,14 +16,19 @@ function setup(){
 
     // Initialize robots spread across the board
     for(let i = 0; i < NUM_ROBOTS; i++){
-        let x = WIDTH*i/5 + WIDTH/10
-        let y = random(HEIGHT - 100) + 50
-        ROBOTS.push(new Robot(createVector(x, y)))
+        let x,y,v
+        do {
+            x = (random(WIDTH - ROBOT_RADIUS*2) + ROBOT_RADIUS)
+            y = (random(HEIGHT - ROBOT_RADIUS*2) + ROBOT_RADIUS)
+            v = createVector(x, y)
+        } while (!ROBOTS.every(x => x.pos.dist(v) > ROBOT_RADIUS*2))
+
+        ROBOTS.push(new Robot(v))
     }
 
     // Create initial tasks
     for(let i = 0; i < NUM_TASKS; i++){
-        TASKS.push(new Task(random(4) + 1))
+        TASKS.push(new Task(floor(random(5)) + 1, TASKS))
     }
 }
 
@@ -44,22 +49,31 @@ function draw(){
         line(0, 0, 0, VIEW_SIZE)
         // Move to center of cell
         translate(VIEW_SIZE/2, VIEW_SIZE/2)
-        // Scale by 4x
-        scale(0.25)
+        // Scale down
+        scale(0.2)
+        // Rotate to point upwards
+        rotate(-HALF_PI)
 
         // Draw what the robot can see
         let seen = ROBOTS[i].sense(ROBOTS, TASKS)
-        translate(p5.Vector.mult(ROBOTS[i].pos, -1))
+        push()
+        // Rotate to match the robot's perspective
         rotate(-ROBOTS[i].dir)
-        for(let robot of seen.robots) robot.draw()
+        translate(p5.Vector.mult(ROBOTS[i].pos, -1))
         for(let task of seen.tasks) task.draw()
+        for(let robot of seen.robots) robot.draw()
+        pop()
 
         // Draw robot in the center
         fill(255)
         stroke(0)
         strokeWeight(3)
         circle(0,0,80)
-        line(0,0,0,-40)
+        line(0,0,40,0)
+        stroke(255)
+        strokeWeight(1)
+        noFill()
+        circle(0,0,SENSING_DIST*2)
 
         pop()
     }
@@ -75,14 +89,16 @@ function draw(){
     // Draw the tasks
     for(let i = 0; i < NUM_TASKS; i++){
         if (TASKS[i].is_complete(ROBOTS)) SCORE += TASKS[i].num
-        if (TASKS[i].expired) TASKS[i] = new Task(random(4)+1)
+        if (TASKS[i].expired) TASKS[i] = new Task(floor(random(5))+1, TASKS)
         TASKS[i].draw()
     }
 
     // Draw the robots
     for(let r of ROBOTS){
         r.draw()
-        if (!r.isTurning){r.move(1)}
-        
+        // r.move(100,80)
+        r.step()
     }
+
+    // noLoop()
 }
